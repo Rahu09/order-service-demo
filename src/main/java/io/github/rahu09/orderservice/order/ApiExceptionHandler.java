@@ -9,6 +9,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+	@ExceptionHandler(OrderStateException.class)
+	ProblemDetail conflict(OrderStateException e) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+	}
+
 	@ExceptionHandler(OrderNotFoundException.class)
 	ProblemDetail notFound(OrderNotFoundException e) {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());

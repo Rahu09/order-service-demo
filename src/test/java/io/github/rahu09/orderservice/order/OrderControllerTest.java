@@ -38,6 +38,18 @@ class OrderControllerTest {
 	}
 
 	@Test
+	void shippedOrderCancelReturns409() throws Exception {
+		OrderRepository repository = new InMemoryOrderRepository();
+		Order shipped = repository.save(new Order(UUID.randomUUID(), "c-1", java.util.List.of(), OrderStatus.SHIPPED, java.time.Instant.now()));
+		MockMvc shippedMvc = MockMvcBuilders
+				.standaloneSetup(new OrderController(new OrderService(repository)))
+				.setControllerAdvice(new ApiExceptionHandler())
+				.build();
+
+		shippedMvc.perform(post("/orders/" + shipped.id() + "/cancel")).andExpect(status().isConflict());
+	}
+
+	@Test
 	void unknownOrderReturns404() throws Exception {
 		mvc.perform(get("/orders/" + UUID.randomUUID())).andExpect(status().isNotFound());
 	}

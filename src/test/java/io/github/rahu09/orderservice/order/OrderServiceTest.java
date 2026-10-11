@@ -26,6 +26,22 @@ class OrderServiceTest {
 	}
 
 	@Test
+	void cancelsAnOrder() {
+		Order created = service.create(request());
+
+		assertThat(service.cancel(created.id()).status()).isEqualTo(OrderStatus.CANCELLED);
+	}
+
+	@Test
+	void shippedOrderCannotBeCancelled() {
+		OrderRepository repository = new InMemoryOrderRepository();
+		OrderService shippedService = new OrderService(repository);
+		Order shipped = repository.save(new Order(UUID.randomUUID(), "c-1", List.of(), OrderStatus.SHIPPED, java.time.Instant.now()));
+
+		assertThatThrownBy(() -> shippedService.cancel(shipped.id())).isInstanceOf(OrderStateException.class);
+	}
+
+	@Test
 	void unknownOrderIsNotFound() {
 		assertThatThrownBy(() -> service.get(UUID.randomUUID())).isInstanceOf(OrderNotFoundException.class);
 	}
