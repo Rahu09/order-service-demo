@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+.vscode/
+.env
+*.pem
+secrets/
+__pycache__/
