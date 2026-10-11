@@ -1,5 +1,7 @@
 package io.github.rahu09.orderservice.order;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +17,20 @@ public class InMemoryOrderRepository implements OrderRepository {
 	public Order save(Order order) {
 		orders.put(order.id(), order);
 		return order;
+	}
+
+	@Override
+	public List<Order> findPage(int page, int size) {
+		return orders.values().stream()
+				.sorted(Comparator.comparing(Order::createdAt).thenComparing(Order::id))
+				.skip((long) page * size)
+				.limit(size)
+				.toList();
+	}
+
+	@Override
+	public long count() {
+		return orders.size();
 	}
 
 	@Override

@@ -30,6 +30,29 @@ class OrderControllerTest {
 	}
 
 	@Test
+	void listIsPaginated() throws Exception {
+		for (int i = 0; i < 3; i++) {
+			mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content("""
+					{"customerId":"c-1","items":[{"sku":"sku-1","quantity":1,"unitPrice":5.00}]}
+					"""));
+		}
+
+		mvc.perform(get("/orders").param("page", "1").param("size", "2"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.items.length()").value(1))
+				.andExpect(jsonPath("$.page").value(1))
+				.andExpect(jsonPath("$.size").value(2))
+				.andExpect(jsonPath("$.total").value(3));
+	}
+
+	@Test
+	void oversizedPageIsCappedAt100() throws Exception {
+		mvc.perform(get("/orders").param("size", "5000"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size").value(100));
+	}
+
+	@Test
 	void invalidRequestReturns400() throws Exception {
 		mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content("""
 				{"customerId":"","items":[]}
