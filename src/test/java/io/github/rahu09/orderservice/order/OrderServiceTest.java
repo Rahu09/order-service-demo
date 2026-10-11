@@ -26,6 +26,13 @@ class OrderServiceTest {
 	}
 
 	@Test
+	void cancelsAnOrder() {
+		Order created = service.create(request());
+
+		assertThat(service.cancel(created.id()).status()).isEqualTo(OrderStatus.CANCELLED);
+	}
+
+	@Test
 	void unknownOrderIsNotFound() {
 		assertThatThrownBy(() -> service.get(UUID.randomUUID())).isInstanceOf(OrderNotFoundException.class);
 	}
