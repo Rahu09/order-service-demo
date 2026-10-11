@@ -1,6 +1,7 @@
 package io.github.rahu09.orderservice.order;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,10 @@ public class OrderService {
 				.map(i -> new OrderItem(i.sku(), i.quantity(), i.unitPrice()))
 				.toList();
 		return repository.save(new Order(UUID.randomUUID(), request.customerId(), items, OrderStatus.CREATED, Instant.now()));
+	}
+
+	public List<Order> list() {
+		return repository.findAll();
 	}
 
 	public Order get(UUID id) {
