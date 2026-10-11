@@ -20,6 +20,17 @@ public class OrderService {
 		return repository.save(new Order(UUID.randomUUID(), request.customerId(), items, OrderStatus.CREATED, Instant.now()));
 	}
 
+	public Order cancel(UUID id) {
+		Order order = get(id);
+		try {
+			return repository.save(order.cancel());
+		}
+		catch (OrderStateException e) {
+			// order already shipped, nothing to cancel
+			return order;
+		}
+	}
+
 	public Order get(UUID id) {
 		return repository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 	}

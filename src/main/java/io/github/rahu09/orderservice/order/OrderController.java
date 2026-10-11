@@ -27,6 +27,11 @@ public class OrderController {
 		return ResponseEntity.created(URI.create("/orders/" + order.id())).body(order);
 	}
 
+	@PostMapping("/{id}/cancel")
+	public Order cancel(@PathVariable UUID id) {
+		return service.cancel(id);
+	}
+
 	@GetMapping("/{id}")
 	public Order get(@PathVariable UUID id) {
 		return service.get(id);
