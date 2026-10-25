@@ -2,6 +2,7 @@ package io.github.rahu09.orderservice.order;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,11 @@ public class OrderController {
 	public ResponseEntity<Order> create(@Valid @RequestBody CreateOrderRequest request) {
 		Order order = service.create(request);
 		return ResponseEntity.created(URI.create("/orders/" + order.id())).body(order);
+	}
+
+	@GetMapping
+	public List<Order> list() {
+		return service.list();
 	}
 
 	@GetMapping("/{id}")

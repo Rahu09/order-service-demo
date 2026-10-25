@@ -1,5 +1,7 @@
 package io.github.rahu09.orderservice.order;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +17,11 @@ public class InMemoryOrderRepository implements OrderRepository {
 	public Order save(Order order) {
 		orders.put(order.id(), order);
 		return order;
+	}
+
+	@Override
+	public List<Order> findAll() {
+		return new ArrayList<>(orders.values());
 	}
 
 	@Override

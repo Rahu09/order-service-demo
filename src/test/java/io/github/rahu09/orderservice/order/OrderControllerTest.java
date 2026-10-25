@@ -30,6 +30,17 @@ class OrderControllerTest {
 	}
 
 	@Test
+	void listReturnsCreatedOrders() throws Exception {
+		mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content("""
+				{"customerId":"c-1","items":[{"sku":"sku-1","quantity":1,"unitPrice":5.00}]}
+				"""));
+
+		mvc.perform(get("/orders"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(1));
+	}
+
+	@Test
 	void invalidRequestReturns400() throws Exception {
 		mvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content("""
 				{"customerId":"","items":[]}
